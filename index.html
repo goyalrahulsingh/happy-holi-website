@@ -122,26 +122,40 @@
     </div>
 
     <script>
-        function showMessage(item) {
-            let messageDiv = document.querySelector('.message');
-            let messageContent = '';
-            
-            if (item === 'balloon') {
-                messageContent = `
-                    <h2>Colorful Love & Joy!</h2>
-                    <p>Just like the balloons we pop together, every moment with you is filled with laughter and joy. 💕 Wishing you a Holi filled with light and love, my dearest!</p>
-                `;
-            } else if (item === 'pichkari') {
-                messageContent = `
-                    <h2>Spray of Love!</h2>
-                    <p>Like the splash of water from the pichkari, you shower my life with vibrant love. 💖 I hope your Holi is as fun, colorful, and joyful as our time together!</p>
-                `;
+        document.addEventListener("DOMContentLoaded", function() {
+            function showMessage(item) {
+                let messageDiv = document.querySelector('.message');
+                let messageContent = '';
+                
+                if (item === 'balloon') {
+                    messageContent = `
+                        <h2>Colorful Love & Joy!</h2>
+                        <p>Just like the balloons we pop together, every moment with you is filled with laughter and joy. 💕 Wishing you a Holi filled with light and love, my dearest!</p>
+                    `;
+                } else if (item === 'pichkari') {
+                    messageContent = `
+                        <h2>Spray of Love!</h2>
+                        <p>Like the splash of water from the pichkari, you shower my life with vibrant love. 💖 I hope your Holi is as fun, colorful, and joyful as our time together!</p>
+                    `;
+                }
+    
+                // Update message and show it
+                messageDiv.innerHTML = messageContent;
+                messageDiv.style.display = 'block';
             }
-
-            // Update message and show it
-            messageDiv.innerHTML = messageContent;
-            messageDiv.style.display = 'block';
-        }
+    
+            // Assign the function to the clickable elements
+            const balloon = document.querySelector('.balloon');
+            const pichkari = document.querySelector('.pichkari');
+    
+            if (balloon) balloon.addEventListener('click', function() {
+                showMessage('balloon');
+            });
+    
+            if (pichkari) pichkari.addEventListener('click', function() {
+                showMessage('pichkari');
+            });
+        });
     </script>
 </body>
 </html>
