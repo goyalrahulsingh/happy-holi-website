@@ -3,161 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Holi, My Love!</title>
+    <title>Happy Holi My Love!</title>
     <style>
+        :root {
+            --pink: #ff1493;
+            --yellow: #ffd700;
+            --purple: #8a2be2;
+            --green: #32cd32;
+            --orange: #ff4500;
+        }
+
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(45deg, #ff6f61, #ffb74d, #ffd54f, #4caf50);
-            background-size: 400% 400%;
-            animation: gradientAnimation 5s ease infinite;
-            color: white;
+            overflow: hidden;
+            background-color: #fff5f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            cursor: crosshair;
+        }
+
+        #ui-layer {
+            position: absolute;
+            z-index: 10;
             text-align: center;
-            overflow: hidden;
-            position: relative;
+            pointer-events: none;
         }
 
         h1 {
-            font-size: 3em;
-            animation: slideIn 3s ease-out;
+            color: #333;
+            font-size: 3rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            opacity: 0.8;
         }
 
-        p {
-            font-size: 1.5em;
-            margin-top: 20px;
-            opacity: 0.9;
-        }
-
-        .message {
-            max-width: 600px;
-            margin: 20px auto;
+        .message-box {
+            background: rgba(255, 255, 255, 0.9);
             padding: 20px;
-            background: rgba(0, 0, 0, 0.4);
             border-radius: 15px;
-            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none; /* Revealed on interaction */
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: auto;
         }
 
-        .confetti {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            background-image: url('https://cdn.pixabay.com/photo/2017/11/17/09/43/confetti-2954231_960_720.png');
-            background-size: cover;
-            animation: confettiFall 1s ease-out infinite;
-        }
-
-        .holi-items {
-            margin-top: 50px;
-        }
-
-        .holi-item {
-            display: inline-block;
-            margin: 20px;
+        /* The Pichkari (Water Gun) */
+        #pichkari {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 50px;
             cursor: pointer;
-            transition: transform 0.3s ease-in-out;
+            pointer-events: auto;
+            transition: transform 0.2s;
+            user-select: none;
         }
 
-        .holi-item:hover {
-            transform: scale(1.2);
-        }
+        #pichkari:hover { transform: rotate(-15deg) scale(1.1); }
 
-        .balloon, .pichkari {
-            width: 100px;
-            height: 100px;
-            background-color: #ffcc00;
+        /* Floating Balloons */
+        .balloon {
+            position: absolute;
+            width: 50px;
+            height: 70px;
             border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5em;
-            color: white;
+            cursor: pointer;
+            animation: float 6s infinite ease-in-out;
+            z-index: 5;
         }
 
-        .pichkari {
-            width: 120px;
-            height: 50px;
-            background-color: #ff4081;
-            border-radius: 10px;
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 22px;
+            width: 2px;
+            height: 20px;
+            background: rgba(0,0,0,0.2);
         }
 
-        .message h2 {
-            font-size: 2em;
-            color: #ffeb3b;
+        /* Color Splats */
+        .splat {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: splatAnim 0.4s forwards;
+            z-index: 1;
         }
 
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-100px) rotate(10deg); }
         }
 
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes splatAnim {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(4); opacity: 0.6; }
         }
 
-        @keyframes confettiFall {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(100vh); }
+        @keyframes popIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
 <body>
-    <div class="confetti"></div>
-    <div class="message">
-        <h1>Happy Holi, My Love! 🌈💖</h1>
-        <p>On this beautiful festival of colors, I just want to say that you color my world with love, joy, and happiness every single day. Thank you for being the brightest part of my life. Wishing you all the colors of happiness today and forever!</p>
-        <div class="holi-items">
-            <div class="holi-item balloon" onclick="showMessage('balloon')">🎈</div>
-            <div class="holi-item pichkari" onclick="showMessage('pichkari')">💦</div>
+
+    <div id="ui-layer">
+        <h1 id="instruction">Click the balloons or the pichkari!</h1>
+        <div class="message-box" id="mainMessage">
+            <h2 style="color: var(--pink);">Happy Holi, My Beautiful Wife! 🌈</h2>
+            <p>May your life be as vibrant and colorful as the gulal today.</p>
+            <p><strong>I love you!</strong></p>
         </div>
     </div>
 
+    <div id="pichkari" onclick="shootWater()">🔫</div>
+
     <script>
-        // Wait until the DOM is fully loaded
-        document.addEventListener("DOMContentLoaded", function() {
-            // Function to display the messages based on clicked item
-            function showMessage(item) {
-                let messageDiv = document.querySelector('.message');
-                let messageContent = '';
-                
-                if (item === 'balloon') {
-                    messageContent = `
-                        <h2>Colorful Love & Joy!</h2>
-                        <p>Just like the balloons we pop together, every moment with you is filled with laughter and joy. 💕 Wishing you a Holi filled with light and love, my dearest!</p>
-                    `;
-                } else if (item === 'pichkari') {
-                    messageContent = `
-                        <h2>Spray of Love!</h2>
-                        <p>Like the splash of water from the pichkari, you shower my life with vibrant love. 💖 I hope your Holi is as fun, colorful, and joyful as our time together!</p>
-                    `;
-                }
+        const colors = ['#ff1493', '#ffd700', '#8a2be2', '#32cd32', '#ff4500', '#00ced1'];
+        let clickCount = 0;
 
-                // Update message content and display it
-                messageDiv.innerHTML = messageContent;
-                messageDiv.style.display = 'block';
+        // Function to create balloons
+        function createBalloon() {
+            const balloon = document.createElement('div');
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            balloon.className = 'balloon';
+            balloon.style.left = Math.random() * 90 + 'vw';
+            balloon.style.top = Math.random() * 80 + 'vh';
+            balloon.style.backgroundColor = color;
+            balloon.style.animationDelay = Math.random() * 2 + 's';
+            
+            balloon.onclick = (e) => {
+                createSplat(e.pageX, e.pageY, color);
+                balloon.remove();
+                handleInteraction();
+            };
+            
+            document.body.appendChild(balloon);
+        }
+
+        // Create initial balloons
+        for(let i=0; i<8; i++) {
+            createBalloon();
+        }
+
+        function createSplat(x, y, color) {
+            const splat = document.createElement('div');
+            splat.className = 'splat';
+            splat.style.left = x + 'px';
+            splat.style.top = y + 'px';
+            splat.style.width = '30px';
+            splat.style.height = '30px';
+            splat.style.backgroundColor = color;
+            splat.style.boxShadow = `0 0 20px ${color}`;
+            document.body.appendChild(splat);
+            
+            // Remove splat from DOM after animation
+            setTimeout(() => splat.remove(), 1000);
+        }
+
+        function shootWater() {
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            createSplat(x, y, color);
+            handleInteraction();
+        }
+
+        function handleInteraction() {
+            clickCount++;
+            if (clickCount >= 3) {
+                document.getElementById('instruction').style.display = 'none';
+                document.getElementById('mainMessage').style.display = 'block';
             }
-
-            // Attach event listeners to elements for interaction
-            const balloon = document.querySelector('.balloon');
-            const pichkari = document.querySelector('.pichkari');
-
-            if (balloon) balloon.addEventListener('click', function() {
-                showMessage('balloon');
-            });
-
-            if (pichkari) pichkari.addEventListener('click', function() {
-                showMessage('pichkari');
-            });
-        });
+            // Keep adding more balloons as she pops them
+            if (document.querySelectorAll('.balloon').length < 5) {
+                createBalloon();
+            }
+        }
     </script>
 </body>
 </html>
